@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Update SubAdmin</title>
+<!--    <link rel="stylesheet" th:href="@{/css/add_group_permissions.css}">-->
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"/>
+</head>
+<body>
+<div class="page-wrapper chiller-theme toggled">
+    <a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
+        <i class="fas fa-bars"></i>
+    </a>
+    <div th:insert="~{fragments/header}"></div>
+    <nav id="sidebar" class="sidebar-wrapper">
+        <div class="sidebar-content">
+            <div class="sidebar-brand">
+                <a href="#">Star Admin</a>
+                <div id="close-sidebar">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+            <div class="sidebar-header">
+                <div class="user-pic">
+                    <img class="img-responsive img-rounded" th:src="${avatarUrl}" alt="User picture"/>
+                </div>
+                <div class="user-info">
+                    <span class="username" th:text="${username}"></span>
+                    <span class="role" th:text="${role}"></span>
+                    <span class="user-status">
+                        <i class="fa fa-circle"></i>
+                        <span>Online</span>
+                    </span>
+                </div>
+            </div>
+            <div th:replace="~{fragments/sidebar}"></div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="page-content">
+        <div class="container">
+            <h1>Update SubAdmin</h1>
+            <div th:if="${allPermissions.contains('subAdmin_update')}">
+                <form th:action="@{/admins/update}" th:object="${user}" method="post">
+                    <input type="hidden" th:field="*{id}"/>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="name">Name</label>
+                            <input type="text" class="form-control" id="name" th:field="*{name}" placeholder="Name">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="userName">User Name</label>
+                            <input type="text" class="form-control" id="userName" th:field="*{userName}"
+                                   placeholder="User Name">
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" th:field="*{email}" placeholder="Email"
+                                   readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="phone">Phone</label>
+                            <input type="text" class="form-control" id="phone" th:field="*{mobile}" placeholder="Phone">
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label for="role">Role</label>
+                            <input type="text" class="form-control" id="role" th:field="*{role}" placeholder="Role">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="groupId">Group</label>
+                        <select id="groupId" name="groupId" class="form-control">
+                            <option value="">Choose...</option>
+                            <option th:each="group : ${groups}" th:value="${group.id}"
+                                    th:text="${group.name}" th:selected="${group.id == user.groupId}"></option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Update</button>
+                    <a th:href="@{/admins/list}" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+            <div th:unless="${allPermissions.contains('subAdmin_update')}">
+                <p>You do not have permission to update sub-admins.</p>
+            </div>
+        </div>
+    </div>
+    <!-- Main Content -->
+
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

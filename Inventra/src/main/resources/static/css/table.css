@@ -1,0 +1,158 @@
+/* styles.css */
+
+/* Center the main content area */
+#main-content {
+    display: flex;
+    justify-content: center; /* Horizontally center the content */
+    align-items: flex-start; /* Align items to the top */
+    width: 100%; /* Take full width of the parent */
+}
+
+/* Style the table container for better layout */
+.table-container {
+    width: 100%; /* Take up the full width of the main content area */
+    max-width: 800px; /* Limit the maximum width of the table container */
+    margin: 0 auto; /* Center the container itself */
+}
+
+/* General Styles for the table */
+.table {
+    width: 100%; /* Make the table take up the full width of its container */
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.table th,
+.table td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Button Styles */
+.btn {
+    display: inline-block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    text-decoration: none; /* Remove underlines from links */
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #337ab7;
+    border-color: #2e6da4;
+}
+
+.btn-sm {
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 3px;
+}
+
+.btn-warning {
+    color: #fff;
+    background-color: #f0ad4e;
+    border-color: #eea236;
+}
+
+.btn-danger {
+    color: #fff;
+    background-color: #d9534f;
+    border-color: #d43f3a;
+}
+
+/* Pagination Styles */
+.pagination {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.pagination span {
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 0 5px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    text-decoration: none;
+    color: #333;
+}
+
+.pagination a {
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 0 5px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    text-decoration: none;
+    color: #333;
+}
+
+.pagination a:hover {
+    background-color: #f2f2f2;
+}
+
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    line-height: 1.6;
+}
+
+h1 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+
+.group {
+    position: absolute;
+    top: 2px;
+    /* margin-left: 126px; */
+    width: 83%;
+    margin-left: 293px;
+    /* position: absolute; */
+}
+
+
+table.table {
+    margin-top: 29px;
+}
+
+.admin{
+     position: absolute;
+        top: 72px;
+        width: 83%;
+            margin-left: 293px;
+}
+
+.product-list{
+         position: absolute;
+            top: 72px;
+            width: 83%;
+                margin-left: 293px;
+}
+.users-list{
+         position: absolute;
+            top: 72px;
+            width: 83%;
+                margin-left: 293px;
+}

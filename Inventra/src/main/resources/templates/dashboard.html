@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link th:href="@{/css/style.css}" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"/>
+</head>
+<body>
+
+<div class="page-wrapper chiller-theme toggled">
+    <a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
+        <i class="fas fa-bars"></i>
+    </a>
+    <div th:insert="~{fragments/header}" ></div>
+    <nav id="sidebar" class="sidebar-wrapper" >
+        <div class="sidebar-content">
+            <div class="sidebar-brand">
+                <a href="#">Star Admin</a>
+                <div id="close-sidebar">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+            <div class="sidebar-header">
+                <div class="user-pic">
+                    <img class="img-responsive img-rounded" th:src="${avatarUrl}"
+                         alt="User picture"/>
+                </div>
+                <div class="user-info">
+                    <span class="username" th:text="${username}"></span>
+                    <span class="role" th:text="${role}"></span>
+                    <span class="user-status">
+                        <i class="fa fa-circle"></i>
+                        <span>Online</span>
+                    </span>
+                </div>
+            </div>
+            <div th:replace="~{fragments/sidebar}"></div>
+        </div>
+    </nav>
+    <!-- Main Content -->
+    <div class="page-content">
+        <div class="container">
+            <!-- This is where page-specific content will be inserted -->
+            <div th:fragment="content">
+                <!-- Default dashboard content here -->
+                <h1>Welcome to the Dashboard!</h1>
+                <p>This is the default dashboard content.</p>
+            </div>
+        </div>
+    </div>
+    <!-- Main Content -->
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.min.js"></script>
+<script th:src="@{/js/script.js}" type="application/javascript"></script>
+
+</body>
+</html>

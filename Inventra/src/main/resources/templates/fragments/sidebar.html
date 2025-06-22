@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Sidebar</title>
+  <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+</head>
+<body>
+<nav class="sidebar-wrapper">
+  <div class="sidebar-content">
+    <div class="sidebar-brand">
+      <a href="#">Star Admin</a>
+      <div id="close-sidebar">
+        <i class="fas fa-times"></i>
+      </div>
+    </div>
+    <div class="sidebar-header">
+      <div class="user-pic">
+        <img class="img-responsive img-rounded" th:src="@{${avatarUrl}}"
+             alt="User picture"/>
+      </div>
+      <div class="user-info">
+        <span class="username" th:text="${username}"></span>
+        <span class="role" th:text="${role}"></span>
+        <span class="user-status">
+                    <i class="fa fa-circle"></i>
+                    <span>Online</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="sidebar-menu">
+      <ul>
+        <li class="header-menu">
+          <a href="/dashboard">Dashboard</a>
+        </li>
+<!--        [[${allPermissions}]]   -> fdfdsfsdfsdf-->
+        <li class="sidebar-dropdown" th:if="${allPermissions.contains('group_view') or allPermissions.contains('group_add')}">
+          <a>
+            <span>Group</span>
+          </a>
+          <div class="sidebar-submenu">
+            <ul>
+              <li th:if="${allPermissions.contains('group_view')}">
+                <a href="/group/list">List</a>
+              </li>
+              <li th:if="${allPermissions.contains('group_add')}">
+                <a href="/group/add">Add</a>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="sidebar-dropdown" th:if="${allPermissions.contains('subAdmin_view') or allPermissions.contains('subAdmin_add')}">
+          <a><span>Sub-Admin</span></a>
+          <div class="sidebar-submenu">
+            <ul>
+              <li th:if="${allPermissions.contains('subAdmin_view')}">
+                <a href="/admins/list">list</a>
+              </li>
+              <li th:if="${allPermissions.contains('subAdmin_add')}">
+                <a href="/admins/add">Add</a>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="sidebar-dropdown" th:if="${allPermissions.contains('product_view') or allPermissions.contains('product_add')}">
+          <a href="#">
+            <span>Product</span>
+          </a>
+          <div class="sidebar-submenu">
+            <ul>
+              <li th:if="${allPermissions.contains('product_view')}">
+                <a href="/product/list">list</a>
+              </li>
+              <li th:if="${allPermissions.contains('product_add')}">
+                <a href="/product/add">Add</a>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="sidebar-dropdown" th:if="${allPermissions.contains('user_view') or allPermissions.contains('user_add')}">
+          <a href="#">
+            <span>User</span>
+          </a>
+          <div class="sidebar-submenu">
+            <ul>
+              <li th:if="${allPermissions.contains('user_view')}">
+                <a href="/users/list">list</a>
+              </li>
+              <li th:if="${allPermissions.contains('user_add')}">
+                <a href="/users/add">Add</a>
+              </li>
+            </ul>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+</body>
+</html>

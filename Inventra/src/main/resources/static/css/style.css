@@ -1,0 +1,30 @@
+/* Import Bootstrap (if needed) */
+ @import url('https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css');
+
+/* Import Base Styles */
+@import url('base.css');
+
+/* Import Header Styles */
+@import url('header.css');
+
+/* Import Sidebar Styles */
+@import url('sidebar.css');
+
+/* Import Theme Styles */
+@import url('themes.css');
+
+/* Import Logout Button Styles */
+@import url('logout-button.css');
+
+/* Import Animation Styles */
+@import url('animations.css');
+
+/* Import Table Styles */
+@import url('table.css');
+
+/* Import add_group_permissions Styles */
+@import url('add_group_permissions.css');
+
+/* Import Update_group_permissions Styles */
+@import url('Update_group_permissions.css');
+

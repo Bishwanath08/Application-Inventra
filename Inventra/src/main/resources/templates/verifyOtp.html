@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Verify Login</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #74ebd5, #acb6e5);
+        font-family: 'Arial', sans-serif;
+        color: #1e1919;
+        margin: 0;
+    }
+
+    .login-container {
+        width: 400px;
+        padding: 30px;
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        text-align: center;
+    }
+  </style>
+</head>
+<body>
+<div class="login-container">
+  <h3>Login OTP</h3>
+  <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
+  <div th:if="${generatedOtp}">
+<!--    <p>Your OTP is: <span th:text="${generatedOtp}"></span></p>-->
+  </div>
+  <form th:action="@{/verifyOtp(email=${email})}" method="post" th:object="${otpVerificationRequest}">
+    <div class="form-group">
+      <label for="otp">Enter OTP:</label>
+      <input type="text" class="form-control" id="otp" th:field="*{otp}" required="required" autocomplete="off">
+    </div>
+    <button type="submit" class="btn btn-primary">Verify OTP</button>
+  </form>
+</div>
+</body>
+</html>

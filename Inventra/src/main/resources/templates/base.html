@@ -1,0 +1,40 @@
+    <!DOCTYPE html>
+    <html xmlns:th="http://www.thymeleaf.org"
+          th:replace="~{layout :: layout(content = ~{this :: content})}">
+    <head>
+      <title th:text="${title}">Default Title</title>
+      <!-- CSS Links - Place them here in the layout template -->
+      <link rel="stylesheet" th:href="@{/css/style.css}" />
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"/>
+
+      <!-- Other meta tags, title, etc. -->
+    </head>
+    <body>
+    <th:block th:include="dashboard"/>
+    <header th:replace="~{fragments/header :: header}"></header>
+
+    <div class="page-wrapper chiller-theme toggled">
+      <a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
+        <i class="fas fa-bars"></i>
+      </a>
+      <nav id="sidebar" class="sidebar-wrapper" th:replace="~{fragments/sidebar :: sidebar}"></nav>
+          <main class="col-md-9">
+            <div th:insert="${content}"></div>
+          </main>
+      <main class="page-content">
+        <div class="container">
+          <div th:insert="${content}"></div>
+        </div>
+      </main>
+    </div>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script th:src="@{/js/script.js}" type="application/javascript"></script>
+
+    </body>
+    </html>
