@@ -3,29 +3,19 @@ package org.productApplication.Inventra.controller;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.productApplication.Inventra.DTO.LoginRequest;
 import org.productApplication.Inventra.DTO.OTPVerificationRequest;
 import org.productApplication.Inventra.jwt.JwtTokenUtil;
-import org.productApplication.Inventra.models.TblPermissions;
 import org.productApplication.Inventra.models.TblUsers;
 import org.productApplication.Inventra.service.GroupService;
 import org.productApplication.Inventra.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.w3c.dom.stylesheets.LinkStyle;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Controller
 public class AdminAuthController {
@@ -64,7 +54,6 @@ public class AdminAuthController {
             }
     }
 
-
     @PostMapping("/verifyOtp")
     public String verifyOtp(HttpServletRequest request,
                             @ModelAttribute("otpVerificationRequest") OTPVerificationRequest otpVerificationRequest,
@@ -81,13 +70,11 @@ public class AdminAuthController {
             response.addCookie(jwtCookie);
 
             request.getSession().setAttribute("Authorization", "Bearer " + jwt);
-
             response.setHeader("Authorization", "Bearer " + jwt);
 
             TblUsers users = userService.getUsersDetails(email);
 
             List<String> permissions = groupService.getPermissionsForGroup(users.getGroupId());
-
             model.addAttribute("allPermissions", permissions);
 
             return "redirect:/dashboard";
@@ -123,12 +110,24 @@ public class AdminAuthController {
     @GetMapping("/header")
     public String showHeader(Model model) {
         model.addAttribute("username", "JohnDoe");
-//        model.addAttribute("avatarUrl", "/images/avatar.jpeg");
         return "header";
     }
 
     @PostMapping("/logout")
-    public String logout(HttpServletRequest request, HttpServletResponse response) {
-        return "redirect:/login";
+    public String logout(HttpServletRequest request,  @CookieValue(value = "jwtToken",
+            defaultValue = "Guest") String jwtToken) {
+        try {
+            String email = jwtTokenUtil.extractEmail(jwtToken);
+            TblUsers users = userService.getUsersDetails(email);
+            HttpSession session = request.getSession(false);
+
+            if (session != null) {
+                session.invalidate();
+            }
+
+            return "redirect:/login";
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

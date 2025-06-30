@@ -1,8 +1,7 @@
 package org.productApplication.Inventra.models;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,18 +23,20 @@ public class TblUsers {
     Long groupId;
 
 
-    @Column(name ="parent_id")
-    Integer parentId;
-
     String avatarUrl;
 
     @Column(name ="name", unique = true, nullable = false)
+    @NotBlank(message = "Name  cannot be empty")
     String name;
 
     @Column(name ="user_name", unique = true, nullable = false)
+    @NotBlank(message = "useName cannot be empty")
     String userName;
 
     @Column(name="email", unique = true, nullable = false)
+    @NotEmpty(message = "Email cannot be empty")
+    @Email(message = "Invalid email format")
+    @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Invalid email address.")
     String email;
 
     private boolean isVerified;
@@ -48,7 +49,7 @@ public class TblUsers {
 
     @Column(name="mobile", unique = true, nullable = false)
     @NotBlank(message = "Mobile number is required")
-    @Pattern(regexp = "^\\d{10}$", message = "Please provide valid mobile number.")
+    @Pattern(regexp = "^[0-9]{10}$", message = "Please provide valid mobile number.")
     String mobile;
 
     @Column(name="password")
@@ -90,6 +91,7 @@ public class TblUsers {
     @Transient
     private String webSecurityToken;
 
+//    @AssertTrue(message = "Passwords do not match")
     public boolean isPasswordMatching() {
         return password != null && password.equals(confirmPassword);
     }

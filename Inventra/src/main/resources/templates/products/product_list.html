@@ -63,8 +63,8 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="product : ${products}">
-          <td th:text="${product.id}"></td>
+        <tr th:each="product,itemStart : ${products}">
+          <td th:text="${(currentPage * pageSize) + itemStart.count}"></td>
           <td th:text="${product.title}"></td>
           <td th:text="${product.description}"></td>
           <td th:text="${product.price}"></td>
@@ -72,7 +72,8 @@
           <td>
             <div class="d-flex">
               <div th:if="${allPermissions.contains('product_update')}">
-                <a th:href="@{/product/edit/{id}(id=${product.id})}" class="btn btn-sm btn-warning me-2">Edit</a>
+                <a th:href="@{/product/edit/{id}/{dataType}(id=${product.id}, dataType='DB')}"
+                   class="btn btn-sm btn-warning me-2">Edit</a>
               </div>
               <div th:if="${allPermissions.contains('product_delete')}">
                 <form th:action="@{/product/delete/{id}(id=${product.id})}" method="post"

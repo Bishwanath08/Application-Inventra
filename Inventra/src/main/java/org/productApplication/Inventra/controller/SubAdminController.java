@@ -42,7 +42,7 @@ public class SubAdminController extends BaseController {
     @GetMapping("/list")
     public String getSubAdminList(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "50") int size,
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "asc") String sortDir,
             Model model, @CookieValue(value = "jwtToken", defaultValue = "Guest") String jwtToken) {
@@ -105,32 +105,17 @@ public class SubAdminController extends BaseController {
 
 
     @PostMapping("/add")
-    public String saveUser(
-            HttpServletRequest request,
-            @Valid @ModelAttribute("newUser") TblUsers newUser,
-            BindingResult result,
-            @RequestParam("groupId") Long groupId,
-            @RequestParam(value = "permissionIds", required = false) List<Long> permissionIds,
-            Model model,
+    public String saveUser(HttpServletRequest request, @Valid @ModelAttribute("newUser") TblUsers newUser, BindingResult result, @RequestParam("groupId") Long groupId,
+            @RequestParam(value = "permissionIds", required = false) List<Long> permissionIds, Model model,
             RedirectAttributes redirectAttributes,
-            @CookieValue(value = "jwtToken", defaultValue = "Guest") String jwtToken
-    ) {
-        TblUsers loggedUser = null;
+            @CookieValue(value = "jwtToken", defaultValue = "Guest") String jwtToken) {
+                TblUsers loggedUser = null;
         try {
             loggedUser = getLoggedUserViaRequest(request, null, jwtToken);
-
-            if (result.hasErrors()) {
-                model.addAttribute("error", "Please correct the errors below.");
-                List<TblGroups> groups = subAdminService.getAllGroups();
-                model.addAttribute("groups", groups);
-                List<String> allPermissions = groupService.getPermissionsForGroup(loggedUser.getGroupId());
-                model.addAttribute("allPermissions", allPermissions);
-                return "admin/subAdmin_add";
-            }
-
             TblUsers existingUser = subAdminService.getUserByEmail(newUser.getEmail());
             if (existingUser != null) {
-                model.addAttribute("error", "A user with this email already exists.");
+                model.addAttribute("emailError", "A user with this email already exists.");
+                model.addAttribute("errorEmail", "A write a correct email");
                 model.addAttribute("newUser", newUser);
                 List<TblGroups> groups = subAdminService.getAllGroups();
                 List<String> allPermissions = groupService.getPermissionsForGroup(loggedUser.getGroupId());
@@ -139,12 +124,60 @@ public class SubAdminController extends BaseController {
                 return "admin/subAdmin_add";
             }
 
+            addCommonAttributes(model, newUser, subAdminService, groupService, loggedUser);
+
+            if (newUser.getName() == null || newUser.getName().trim().isEmpty()) {
+                model.addAttribute("error", "Name is required.");
+                addCommonAttributes(model, newUser, subAdminService, groupService, loggedUser);
+                return "admin/subAdmin_add";
+            }
+
+            if (newUser.getUserName() == null || newUser.getUserName().trim().isEmpty()) {
+                model.addAttribute("error", "User Name is required.");
+                addCommonAttributes(model, newUser, subAdminService, groupService, loggedUser);
+                return "admin/subAdmin_add";
+            }
+
+            if (newUser.getEmail() == null || newUser.getEmail().trim().isEmpty()) {
+                model.addAttribute("error", "Email is required.");
+                addCommonAttributes(model, newUser, subAdminService, groupService, loggedUser);
+                return "admin/subAdmin_add";
+            }
+
+
+            if (newUser.getPassword() == null || newUser.getPassword().isEmpty()) {
+                model.addAttribute("error", "Password is required.");
+                addCommonAttributes(model, newUser, subAdminService, groupService, loggedUser);
+                return "admin/subAdmin_add";
+            }
+
+            if (newUser.getConfirmPassword() == null || newUser.getConfirmPassword().isEmpty()) {
+                model.addAttribute("error", "Confirm Password is required.");
+                addCommonAttributes(model, newUser, subAdminService, groupService, loggedUser);
+                return "admin/subAdmin_add";
+            }
+
+            if (newUser.getMobile() == null || newUser.getMobile().trim().isEmpty()) {
+                model.addAttribute("error", "Mobile number is required.");
+                addCommonAttributes(model, newUser, subAdminService, groupService, loggedUser);
+                return "admin/subAdmin_add";
+            }
+
+            if (groupId == null) {
+                model.addAttribute("error", "Group is required.");
+                addCommonAttributes(model, newUser, subAdminService, groupService, loggedUser);
+                return "admin/subAdmin_add";
+            }
+
             if (!newUser.isPasswordMatching()) {
                 result.rejectValue("confirmPassword", "error.user", "Passwords do not match");
-                List<TblGroups> groups = subAdminService.getAllGroups();
-                List<String> allPermissions = groupService.getPermissionsForGroup(loggedUser.getGroupId());
-                model.addAttribute("allPermissions", allPermissions);
-                model.addAttribute("groups", groups);
+                addCommonAttributes(model, newUser, subAdminService, groupService, loggedUser);
+                return "admin/subAdmin_add";
+            }
+
+            if (result.hasErrors()) {
+                model.addAttribute("error", "Please correct the errors below.");
+                addCommonAttributes(model, newUser, subAdminService, groupService, loggedUser);
                 return "admin/subAdmin_add";
             }
 
@@ -154,32 +187,22 @@ public class SubAdminController extends BaseController {
                 redirectAttributes.addFlashAttribute("message", "Sub-Admin successfully created.");
                 return "redirect:/admins/list";
             } else {
-
                 model.addAttribute("error", "Something went wrong. Sub-Admin not created.");
-                model.addAttribute("newUser", newUser);
-                List<TblGroups> groups = subAdminService.getAllGroups();
-                List<String> allPermissions = groupService.getPermissionsForGroup(loggedUser.getGroupId());
-                model.addAttribute("allPermissions", allPermissions);
-                model.addAttribute("groups", groups);
+                addCommonAttributes(model, newUser, subAdminService, groupService, loggedUser);
                 return "admin/subAdmin_add";
             }
 
         } catch (Exception e) {
             logger.error("Error saving user", e);
             model.addAttribute("error", "An unexpected error occurred: " + e.getMessage());
-            model.addAttribute("newUser", newUser);
-            List<TblGroups> groups = subAdminService.getAllGroups();
-            List<String> allPermissions = groupService.getPermissionsForGroup(loggedUser.getGroupId());
-            model.addAttribute("allPermissions", allPermissions);
-            model.addAttribute("groups", groups);
+            addCommonAttributes(model, newUser, subAdminService, groupService, loggedUser);
             return "admin/subAdmin_add";
         }
     }
 
 
     @GetMapping("/update/{userId}")
-    public String getEditSubAdminPage(@PathVariable("userId") Long userId, Model model,
-                                      RedirectAttributes redirectAttributes,
+    public String getEditSubAdminPage(@PathVariable("userId") Long userId, Model model, RedirectAttributes redirectAttributes,
                                       @CookieValue(value = "jwtToken", defaultValue = "Guest") String jwtToken) {
         try {
             String email = jwtTokenUtil.extractEmail(jwtToken);
@@ -236,11 +259,44 @@ public class SubAdminController extends BaseController {
 
                 return "admin/Update_subAdmin";
             }
+            if (user.getName() == null || user.getName().trim().isEmpty()) {
+                model.addAttribute("error", "Name is required.");
+                addCommonAttributes(model, user, subAdminService, groupService, loggedUser);
+                return "admin/subAdmin_add";
+            }
 
-            subAdminService.updateUser(loggedUser.getId(), user, groupId, permissionIds);
+            if (user.getUserName() == null || user.getUserName().trim().isEmpty()) {
+                model.addAttribute("error", "User Name is required.");
+                addCommonAttributes(model, user, subAdminService, groupService, loggedUser);
+                return "admin/subAdmin_add";
+            }
+            if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
+                model.addAttribute("error", "Email is required.");
+                addCommonAttributes(model, user, subAdminService, groupService, loggedUser);
+                return "admin/subAdmin_add";
+            }
+            if (user.getMobile() == null || user.getMobile().trim().isEmpty()) {
+                model.addAttribute("error", "Mobile number is required.");
+                addCommonAttributes(model, user, subAdminService, groupService, loggedUser);
+                return "admin/subAdmin_add";
+            }
 
-            redirectAttributes.addFlashAttribute("message", "SubAdmin Successfully Updated");
-            return "redirect:/admins/list";
+            if (groupId == null) {
+                model.addAttribute("error", "Group is required.");
+                addCommonAttributes(model, user, subAdminService, groupService, loggedUser);
+                return "admin/subAdmin_add";
+            }
+
+            TblUsers updateUser=  subAdminService.updateUser(loggedUser.getId(), user, groupId, permissionIds);
+
+            if (updateUser != null && updateUser.getId() != null && updateUser.getId() > 0) {
+                redirectAttributes.addFlashAttribute("message", "SubAdmin Successfully Updated");
+                return "redirect:/admins/list";
+            }else {
+                model.addAttribute("error", "Something went wrong. Sub-Admin not Updated.");
+                addCommonAttributes(model, user, subAdminService, groupService, loggedUser);
+                return "admin/subAdmin_add";
+            }
         } catch (Exception e) {
             e.printStackTrace();
             model.addAttribute("error", "Error updating subAdmin: " + e.getMessage());

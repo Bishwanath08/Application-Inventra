@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Add Groups Permissions </title>
+    <title>Add Groups Permissions</title>
     <link rel="stylesheet" th:href="@{/css/add_group_permissions.css}">
     <link th:href="@{/css/style.css}" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"/>
@@ -44,25 +44,31 @@
     <div class="page-content">
         <div class="container">
             <h3 class="page-title">Add Group</h3>
+
             <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
+
+
             <div th:if="${allPermissions.contains('group_add')}">
-                <form th:action="@{/group/add}" th:object="${newGroup}" method="post">
-                    <div class="form-group">
-                        <label for="name">Group Name:</label>
-                        <input type="text" th:field="*{name}" id="name" class="form-control" required>
-                    </div>
+                <div th:if="${allPermissions != null and allPermissions.contains('group_add')}">
+                    <form th:action="@{/group/add}" th:object="${newGroup}" method="post">
 
-                    <div class="form-group">
-                        <label>Permissions:</label>
-                        <div th:each="permission : ${dbPermission}" class="form-check">
-                            <input type="checkbox" name="permissionIds" th:value="${permission.id}" th:id="${permission.id}" class="form-check-input">
-                            <label class="form-check-label" th:for="${permission.id}" th:text="${permission.name}"></label>
+                        <div class="form-group">
+                            <label for="name">Group Name:</label>
+                            <input type="text" th:field="*{name}" id="name" class="form-control" required>
                         </div>
-                    </div>
 
-                    <button  type="submit" class="btn btn-primary">Create Group</button>
-                    <a th:href="@{/group/list}" class="btn btn-secondary">Cancel</a>
-                </form>
+                        <div class="form-group">
+                            <label>Permissions:</label>
+                            <div th:each="permission : ${dbPermission}" class="form-check">
+                                <input type="checkbox" name="permissionIds" th:value="${permission.id}" th:id="${permission.id}" class="form-check-input">
+                                <label class="form-check-label" th:for="${permission.id}" th:text="${permission.name}"></label>
+                            </div>
+                        </div>
+                        <button  type="submit" class="btn btn-primary">Create Group</button>
+                        <a th:href="@{/group/list}" class="btn btn-secondary">Cancel</a>
+                    </form>
+
+                </div>
             </div>
         </div>
     </div>
@@ -71,5 +77,6 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
 </html>

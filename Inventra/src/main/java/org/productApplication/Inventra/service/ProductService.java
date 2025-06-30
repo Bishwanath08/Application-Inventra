@@ -21,9 +21,20 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-//    public void saveProduct(TblProducts products) {
-//        productRepository.save(product);
-//    }
+    public String saveProduct(TblProducts products) {
+        products.setTitle(products.getTitle());
+        products.setDescription(products.getDescription());
+        products.setPrice(products.getPrice());
+        products.setThumbnail(products.getThumbnail());
+
+        products.setDiscountPercentage(products.getDiscountPercentage());
+        products.setRating(products.getRating());
+        products.setStock(products.getStock());
+        products.setBrand(products.getBrand());
+        products.setCategory(products.getCategory());
+        productRepository.save(products);
+        return saveProduct(products);
+    }
 //
 //    public Optional<TblProducts> getProductById(Long id) {
 //        return productRepository.findById(id);

@@ -44,9 +44,9 @@
         <div class="container">
             <h1>Edit User</h1>
             <div th:if="${allPermissions.contains('user_update')}">
-            <form th:action="@{/users/update/{id}(id=${user.id})}" th:object="${user}" method="post">
-                <input type="hidden" th:field="*{id}" />  <!-- Hidden field for the user ID -->
-
+                <form th:action="@{/users/update/{id}/{dataType}(id=${user.id}, dataType=${dataType})}"
+                      th:object="${user}" method="post">
+                    <input type="hidden" th:field="*{id}"/>
                 <div class="mb-3">
                     <label for="firstName" class="form-label">First Name:</label>
                     <input type="text" class="form-control" id="firstName" th:field="*{firstName}" required>

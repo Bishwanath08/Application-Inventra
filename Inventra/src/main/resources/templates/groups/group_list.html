@@ -73,25 +73,25 @@
                 </tr>
                 </tbody>
             </table>
-            <div class="pagination" th:if="${groupsList.totalPages > 0}">
-                <span>Page: <span th:text="${groupsList.number + 1}"></span> / <span th:text="${groupsList.totalPages}"></span></span>
-                <span>Total Elements: <span th:text="${groupsList.totalElements}"></span></span>
+<!--            <div class="pagination" th:if="${groupsList.totalPages > 0}">-->
+<!--                <span>Page: <span th:text="${groupsList.number + 1}"></span> / <span th:text="${groupsList.totalPages}"></span></span>-->
+<!--                <span>Total Elements: <span th:text="${groupsList.totalElements}"></span></span>-->
 
-                <a th:if="${groupsList.hasPrevious()}"
-                   th:href="@{/group/list(page=${currentPage - 1}, size=${pageSize}, sortBy=${sortBy}, sortDirection=${sortDirection})}">Previous</a>
+<!--                <a th:if="${groupsList.hasPrevious()}"-->
+<!--                   th:href="@{/group/list(page=${currentPage - 1}, size=${pageSize}, sortBy=${sortBy}, sortDirection=${sortDirection})}">Previous</a>-->
 
-                <th:block th:each="i : ${#numbers.sequence(0, groupsList.totalPages - 1)}">
-                    <a th:href="@{/group/list(page=${i}, size=${pageSize}, sortBy=${sortBy}, sortDirection=${sortDirection})}"
-                       th:text="${i + 1}"
-                       th:classappend="${currentPage == i ? 'active' : ''}"></a>
-                </th:block>
+<!--                <th:block th:each="i : ${#numbers.sequence(0, groupsList.totalPages - 1)}">-->
+<!--                    <a th:href="@{/group/list(page=${i}, size=${pageSize}, sortBy=${sortBy}, sortDirection=${sortDirection})}"-->
+<!--                       th:text="${i + 1}"-->
+<!--                       th:classappend="${currentPage == i ? 'active' : ''}"></a>-->
+<!--                </th:block>-->
 
-                <a th:if="${groupsList.hasNext()}"
-                   th:href="@{/group/list(page=${currentPage + 1}, size=${pageSize}, sortBy=${sortBy}, sortDirection=${sortDirection})}">Next</a>
-            </div>
-            <div th:if="${groupsList.totalPages == 0}">
-                <span>No groups found</span>
-            </div>
+<!--                <a th:if="${groupsList.hasNext()}"-->
+<!--                   th:href="@{/group/list(page=${currentPage + 1}, size=${pageSize}, sortBy=${sortBy}, sortDirection=${sortDirection})}">Next</a>-->
+<!--            </div>-->
+<!--            <div th:if="${groupsList.totalPages == 0}">-->
+<!--                <span>No groups found</span>-->
+<!--            </div>-->
         </div>
     </div>
     <!-- Main Content -->

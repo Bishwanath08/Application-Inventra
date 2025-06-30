@@ -3,6 +3,7 @@ package org.productApplication.Inventra.service;
 import org.productApplication.Inventra.models.TblUsers;
 import org.productApplication.Inventra.models.Users;
 import org.productApplication.Inventra.DTO.UsersResponse;
+import org.productApplication.Inventra.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,18 +20,32 @@ public class UsersService {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    private final String API_URL = "https://dummyjson.com/users";
+
 
     public UsersResponse getUsers(int page, int size) {
+
+//
+//        String url = UriComponentsBuilder.fromHttpUrl("https://dummyjson.com/users")
+//                .queryParam("limit", size)
+//                .queryParam("skip", skip)
+//                .toUriString();
+
+        RestTemplate restTemplate = new RestTemplate();
         int skip = page * size;
-
-        String url = UriComponentsBuilder.fromHttpUrl("https://dummyjson.com/users")
-                .queryParam("limit", size)
-                .queryParam("skip", skip)
-                .toUriString();
-
+       String  url = API_URL + "?limit=" + size + "&skip=" + skip;
         try {
             ResponseEntity<UsersResponse> response = restTemplate.getForEntity(url, UsersResponse.class);
-            return response.getBody();
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return response.getBody();
+            }else {
+                System.out.println("Error fetching Users: " + response.getStatusCode() );
+                return null;
+            }
+
         } catch (Exception e) {
             System.err.println("Error fetching users: " + e.getMessage());
             return null;
@@ -49,7 +64,13 @@ public class UsersService {
             ResponseEntity<Users> responseEntity = restTemplate.postForEntity(url, requestEntity, Users.class);
 
             if (responseEntity.getStatusCode().is2xxSuccessful()) {
-                return responseEntity.getBody();
+                Users users = new Users();
+                users.setFirstName(users.getFirstName());
+                users.setLastName(users.getLastName());
+                users.setEmail(users.getEmail());
+                users.setPhone(users.getPhone());
+
+                userRepository.save(users);
             } else {
                 System.err.println("Error adding user: " + responseEntity.getStatusCode());
                 return null;
@@ -58,6 +79,8 @@ public class UsersService {
             System.err.println("Error adding user: " + e.getMessage());
             return null;
         }
+
+        return newUser;
     }
 //    public Users updateUser(Users newUser, String id) {
 //        String url = "https://dummyjson.com/users/update/"+id;

@@ -73,7 +73,7 @@ public class SubAdminService {
         return null;
     }
 
-    public void updateUser(Long loggedUserId, TblUsers user, Long groupId, List<Long> permissionIds) {
+    public TblUsers updateUser(Long loggedUserId, TblUsers user, Long groupId, List<Long> permissionIds) {
 
         Optional<TblUsers> existingUserOptinal = subAdminRepository.findById(user.getId());
         if (existingUserOptinal.isEmpty()){
@@ -91,6 +91,7 @@ public class SubAdminService {
         existingUser.setPermissions(permissions);
         existingUser.setUpdatedBy(loggedUserId.intValue());
         subAdminRepository.save(existingUser);
+        return existingUser;
     }
 
 

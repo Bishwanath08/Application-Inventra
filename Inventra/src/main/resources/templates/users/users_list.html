@@ -46,7 +46,7 @@
       <div th:if="${allPermissions.contains('user_view')}">
         <a th:href="@{/users/list}" class="btn btn-primary mb-3">Users List</a>
       </div>
-
+      <div th:if="${users != null and not users.isEmpty()}">
       <table class="table table-striped">
         <thead>
         <tr>
@@ -59,8 +59,9 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="user : ${users}">
-          <td th:text="${user.id}"></td>
+        <tr th:each="user,itemStart : ${users}">
+<!--          <td th:text="${user.id}"></td>-->
+          <td th:text="${(currentPage * pageSize) + itemStart.count}"></td>
           <td th:text="${user.firstName}"></td>
           <td th:text="${user.lastName}"></td>
           <td th:text="${user.email}"></td>
@@ -68,7 +69,8 @@
           <td>
             <div class="d-flex">
               <div th:if="${allPermissions.contains('user_update')}">
-                <a th:href="@{/users/edit/{id}(id=${user.id})}" class="btn btn-sm btn-warning me-2">Edit</a>
+                <a th:href="@{/users/edit/{id}/{dataType}(id=${user.id}, dataType = 'DB')}"
+                   class="btn btn-sm btn-warning me-2">Edit</a>
               </div>
               <div th:if="${allPermissions.contains('user_delete')}">
                 <form th:action="@{/users/delete/{id}(id=${user.id})}" method="post"

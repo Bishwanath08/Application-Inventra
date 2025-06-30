@@ -35,17 +35,18 @@ public class GroupController extends BaseController {
         public String getAddGroupPage(Model model, @CookieValue(value = "jwtToken",
                 defaultValue = "Guest") String jwtToken) {
             try {
-                String email = jwtTokenUtil.extractEmail(jwtToken);
-                TblUsers users = userService.getUsersDetails(email);
-                List<TblPermissions> dbPermission = groupService.getPermissionList();
-                List<String> permissions = groupService.getPermissionsForGroup(users.getGroupId());
-                model.addAttribute("allPermissions", permissions);
-                model.addAttribute("dbPermission", dbPermission);
-                model.addAttribute("newGroup", new TblGroups());
-                model.addAttribute("username", users.getUserName());
-                model.addAttribute("email", users.getEmail());
-                model.addAttribute("avatarUrl", "/images/avatar.jpeg");
-                model.addAttribute("role", users.getRole());
+//                String email = jwtTokenUtil.extractEmail(jwtToken);
+//                TblUsers users = userService.getUsersDetails(email);
+//                List<TblPermissions> dbPermission = groupService.getPermissionList();
+//                List<String> permissions = groupService.getPermissionsForGroup(users.getGroupId());
+//                model.addAttribute("allPermissions", permissions);
+//                model.addAttribute("dbPermission",   dbPermission);
+//                model.addAttribute("newGroup",       new TblGroups());
+//                model.addAttribute("username", users.getUserName());
+//                model.addAttribute("email", users.getEmail());
+//                model.addAttribute("avatarUrl", "/images/avatar.jpeg");
+//                model.addAttribute("role", users.getRole());
+                getBasicDeitals(model, jwtToken);
                 return "groups/add_group_permissions";
             } catch (Exception e) {
                 e.printStackTrace();
@@ -63,16 +64,30 @@ public class GroupController extends BaseController {
             try {
                 TblUsers loggedUser = getLoggedUserViaRequest(request,null, jwtToken);
                 TblGroups existingGroup = groupService.getGroupByName(newGroup.getName());
+                getBasicDeitals(model, jwtToken);
 
                 if (existingGroup != null) {
                     model.addAttribute("error", "A group with the same name already exists.");
                     model.addAttribute("newGroup", newGroup);
-                    List<TblPermissions> allPermissions = groupService.getPermissionList();
-                    model.addAttribute("allPermissions", allPermissions);
+                    List<TblPermissions> allPermissions2 = groupService.getPermissionList();
+                    model.addAttribute("allPermissions", allPermissions2);
                     return "groups/add_group_permissions";
                 }
 
+                List<TblPermissions> allPermissions = groupService.getPermissionList();
                 TblGroups group = groupService.saveGroupWithPermission(loggedUser.getId(), newGroup.getName(), permissionIds);
+                model.addAttribute("dbPermission", allPermissions);
+
+
+                if (permissionIds == null || permissionIds.isEmpty()) {
+                    model.addAttribute("error", " Please select at least one permission for group.");
+                    model.addAttribute("newGroup", newGroup);
+                    List<String> groupPermissions = groupService.getPermissionsForGroup(loggedUser.getGroupId());
+                    model.addAttribute("allPermissions", groupPermissions);
+                    return "groups/add_group_permissions";
+                }
+
+
 
                 if (group != null && group.getId() != null && group.getId() > 0) {
                     redirectAttributes.addFlashAttribute("message", "Group Successfully created");
@@ -80,8 +95,8 @@ public class GroupController extends BaseController {
                 } else {
                     model.addAttribute("error", "Something went wrong, group not created successfully");
                     model.addAttribute("newGroup", newGroup);
-                    List<TblPermissions> allPermissions = groupService.getPermissionList();
-                    model.addAttribute("allPermissions", allPermissions);
+                    List<TblPermissions> allPermissions2 = groupService.getPermissionList();
+                    model.addAttribute("allPermissions", allPermissions2);
                     return "groups/add_group_permissions";
                 }
 
@@ -138,6 +153,13 @@ public class GroupController extends BaseController {
                 List<TblPermissions> dbPermission = groupService.getPermissionList();
                 model.addAttribute("dbPermission", dbPermission);
 
+//                model.addAttribute("username", users.getUserName());
+//                model.addAttribute("email", users.getEmail());
+//                model.addAttribute("avatarUrl", "/images/avatar.jpeg");
+//                model.addAttribute("role", users.getRole());
+                    getBasicDeitals(model, jwtToken);
+
+
 
                 Optional<TblGroups> groupOptional = groupService.getGroupById(groupId);
                 if (groupOptional.isEmpty()) {
@@ -146,7 +168,6 @@ public class GroupController extends BaseController {
                 }
                 TblGroups group = groupOptional.get();
                 model.addAttribute("group", group);
-
 
                 Set<Long> selectedPermissionIds = group.getPermissions().stream()
                         .map(TblPermissions::getId)
@@ -169,18 +190,38 @@ public class GroupController extends BaseController {
                 @ModelAttribute("group") TblGroups group,
                 @RequestParam(value = "permissionIds", required = false) List<Long> permissionIds,
                 Model model,
-                RedirectAttributes redirectAttributes, @CookieValue(value = "jwtToken", defaultValue = "Guest") String jwtToken) {
+                RedirectAttributes redirectAttributes,
+                @CookieValue(value = "jwtToken", defaultValue = "Guest") String jwtToken
+        ) {
+            TblUsers loggedUser = null;
             try {
-                TblUsers loggedUser = getLoggedUserViaRequest(request,null,jwtToken);
+                loggedUser = getLoggedUserViaRequest(request, null, jwtToken);
+
+                List<TblPermissions> allPermissions = groupService.getPermissionList();
+                model.addAttribute("dbPermission", allPermissions);
+                model.addAttribute("selectedPermissionIds", permissionIds != null ? permissionIds.stream().collect(Collectors.toSet()) : null);
+
+                List<String> groupPermissions = groupService.getPermissionsForGroup(loggedUser.getGroupId());
+                model.addAttribute("allPermissions", groupPermissions);
+
+                if (permissionIds == null || permissionIds.isEmpty()) {
+                    model.addAttribute("error", "Please select at least one permission for the group.");
+                    model.addAttribute("group", group);
+                    return "groups/Update_group_permissions";
+                }
+
                 groupService.updateGroup(loggedUser.getId(), group, permissionIds);
+
                 redirectAttributes.addFlashAttribute("message", "Group Successfully Updated");
                 return "redirect:/group/list";
-            }catch (Exception e){
+
+            } catch (Exception e) {
                 e.printStackTrace();
                 model.addAttribute("error", "Error updating group: " + e.getMessage());
-                List<TblPermissions> allPermissions = groupService.getPermissionList();
-                model.addAttribute("allPermissions", allPermissions);
+                model.addAttribute("dbPermission", groupService.getPermissionList());
+                model.addAttribute("allPermissions", groupService.getPermissionsForGroup(loggedUser.getGroupId()));
                 model.addAttribute("selectedPermissionIds", permissionIds != null ? permissionIds.stream().collect(Collectors.toSet()) : null);
+                model.addAttribute("group", group);
                 return "groups/Update_group_permissions";
             }
         }

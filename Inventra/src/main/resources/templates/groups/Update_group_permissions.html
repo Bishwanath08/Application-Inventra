@@ -42,8 +42,11 @@
     <div class="page-content">
         <div class="container">
             <h3 class="page-title">Update Group Permissions</h3>
+
             <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
+
             <div th:if="${allPermissions.contains('group_update')}">
+                <div th:if="${allPermissions != null and allPermissions.contains('group_update')}">
                 <form th:action="@{/group/update}" th:object="${group}" method="post">
                     <input type="hidden" th:field="*{id}"/>
 
@@ -66,6 +69,7 @@
                     <button type="submit" class="btn btn-primary">Update Group</button>
                     <a th:href="@{/group/list}" class="btn btn-secondary">Cancel</a>
                 </form>
+            </div>
             </div>
         </div>
     </div>

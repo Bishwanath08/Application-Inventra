@@ -21,26 +21,26 @@ public class TblProducts {
 
     private String description;
 
-    @Column(name = "status")
-    String status;
-
-    @Column(name = "is_deleted")
-    Boolean isDeleted;
-
-    @Column(name = "created_at")
-    Long createdAt;
-
-    @Column(name = "created_by")
-    Long createdBy;
-
-    @Column(name = "updated_at")
-    Long updatedAt;
-
-    @Column(name = "updated_by")
-    Integer updatedBy;
-
-    @Column(name = "image")
-    String image;
+//    @Column(name = "status")
+//    String status;
+//
+//    @Column(name = "is_deleted")
+//    Boolean isDeleted;
+//
+//    @Column(name = "created_at")
+//    Long createdAt;
+//
+//    @Column(name = "created_by")
+//    Long createdBy;
+//
+//    @Column(name = "updated_at")
+//    Long updatedAt;
+//
+//    @Column(name = "updated_by")
+//    Integer updatedBy;
+//
+//    @Column(name = "image")
+//    String image;
 
     private Double discountPercentage;
     private Double rating;
