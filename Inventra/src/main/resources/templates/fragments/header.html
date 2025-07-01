@@ -1,5 +1,5 @@
     <!DOCTYPE html>
-    <html xmlns:th="http://www.thymeleaf.org">
+    <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
     <head>
       <title>Header</title>
         <link rel="stylesheet" th:href="@{/css/header.css}">
@@ -9,9 +9,9 @@
           <a class="navbar-brand" href="#">Star Admin Dashboard</a>
           <div class="ms-auto d-flex align-items-center">
               <span class="text-white me-3" th:text="'Welcome, ' + ${email}"> Welcome </span>
-<!--              <form id="logoutForm" th:action="@{/logout}" method="post">-->
-<!--                  <button type="submit">Logout</button>-->
-<!--              </form>-->
+              <form id="logoutForm" th:action="@{/logout}" method="post"  sec:authorize="isAuthenticated()">
+                  <button type="submit">Logout</button>
+              </form>
           </div>
       </header>
     </body>

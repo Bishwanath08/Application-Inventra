@@ -47,7 +47,7 @@ public class UserService {
 
         if (users != null) {
 
-            if (passwordEncoder.matches(password, users.getPassword())) {
+            if (passwordEncoder.matches(password.replaceAll("\\s", ""), users.getPassword())) {
                 String otp = generateOTP(4, users);
                 usersRepository.save(users);
                 return otp;
@@ -85,7 +85,9 @@ public class UserService {
         if (users != null) {
             System.out.println("TblUsers found: " + users.getEmail());
 
-            if (users.getLoginOtp() != null && users.getLoginOtp().equals(otp)) {
+            String cleanedOtp = otp.trim();
+
+            if (users.getLoginOtp() != null && users.getLoginOtp().equals(cleanedOtp)) {
                 System.out.println("OTP is valid");
 
                 try {

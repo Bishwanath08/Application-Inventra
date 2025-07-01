@@ -124,7 +124,6 @@ public class AdminAuthController {
             if (session != null) {
                 session.invalidate();
             }
-
             return "redirect:/login";
         } catch (Exception e) {
             throw new RuntimeException(e);
